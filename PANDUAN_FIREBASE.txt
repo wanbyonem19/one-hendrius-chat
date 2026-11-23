@@ -1,0 +1,92 @@
+PANDUAN FIREBASE — ONE HENDRIUS CHAT (APK + LINK)
+=================================================
+Satu backend Firebase gratis dipakai berdua: APK dan versi link.
+Kerjakan langkah 1–6 SEKALI saja, dari HP atau laptop, pakai akun
+Google kamu. Setelah itu APK dan link langsung bisa dipakai siapa saja.
+
+LANGKAH 1 — BUAT PROYEK FIREBASE (gratis)
+  1. Buka https://console.firebase.google.com (login Google)
+  2. "Add project" / "Tambahkan proyek" > beri nama, misal:
+     one-hendrius-chat > Continue (Google Analytics boleh dimatikan)
+  3. Tunggu proyek jadi.
+
+LANGKAH 2 — AKTIFKAN LOGIN EMAIL/PASSWORD
+  1. Di menu kiri: Build > Authentication > Get started
+  2. Tab "Sign-in method" > "Email/Password" > Enable > Save
+  (Aplikasi memakai email internal username@onehendrius.chat,
+   user tidak pernah melihat email itu.)
+
+LANGKAH 3 — BUAT FIRESTORE DATABASE
+  1. Menu kiri: Build > Firestore Database > Create database
+  2. Pilih "Start in production mode" > pilih lokasi server
+     (asia-southeast1 = Singapura, paling dekat) > Enable
+  3. Tab "Rules" > hapus isi lama > tempel isi file firestore.rules
+     dari folder proyek ini > Publish
+
+LANGKAH 4 — BUAT STORAGE (untuk foto)
+  1. Menu kiri: Build > Storage > Get started
+  2. Pilih "Start in production mode" > lokasi sama seperti Firestore
+  3. Tab "Rules" > hapus isi lama > tempel isi file storage.rules
+     dari folder proyek ini > Publish
+
+LANGKAH 5 — SALIN CONFIG KE index.html
+  1. Di Firebase Console: Project settings (ikon gerigi) >
+     "Your apps" > pilih ikon Web </> > beri nama "web" > Register
+  2. Akan muncul kode firebaseConfig berisi apiKey, authDomain,
+     projectId, storageBucket, messagingSenderId, appId.
+  3. Buka file web/index.html, cari bagian FIREBASE_CONFIG di dekat
+     atas (ada komentar besar "ISI CONFIG FIREBASE DI SINI"),
+     ganti semua nilai "MASUKKAN_..." dengan nilai dari langkah 2.
+  4. Simpan. SATU file ini dipakai APK dan link — jangan isi di
+     tempat lain.
+
+LANGKAH 6A — DEPLOY VERSI LINK (Firebase Hosting, gratis)
+  Di laptop/komputer yang ada Node.js:
+    npm install -g firebase-tools
+    firebase login
+    cd (folder proyek ini)
+    firebase use --add        (pilih proyek one-hendrius-chat)
+    firebase deploy
+  Link jadinya:
+    https://one-hendrius-chat.web.app
+    (tepatnya https://<project-id>.web.app — ganti <project-id>
+     dengan ID proyekmu; ada juga https://<project-id>.firebaseapp.com)
+  Tiap kali index.html diubah, jalankan "firebase deploy" lagi.
+
+  ALTERNATIF — GitHub Pages (juga gratis, tanpa firebase-tools):
+    1. Buat repo GitHub baru, upload file web/index.html sebagai
+       index.html di root repo (atau folder docs/)
+    2. Settings > Pages > Source: Deploy from a branch > main
+    3. Link jadinya: https://<username>.github.io/<repo>/
+    Catatan: Firebase Hosting lebih disarankan karena deploy dan
+    aturan hosting sudah disiapkan di firebase.json.
+
+LANGKAH 6B — BUILD ULANG APK (supaya config masuk ke aplikasi)
+  Setelah langkah 5, jalankan dari folder proyek ini:
+    bash build.sh
+  Hasilnya: one-hendrius-chat.apk — install di HP, langsung jalan.
+  (Keystore app.keystore di folder proyek JANGAN hilang — update
+   APK berikutnya harus ditandatangani dengan keystore yang sama,
+   kalau tidak HP menolak update.)
+
+PAKET GRATIS FIREBASE (Spark) — cukup untuk chat ini:
+  - Auth: tanpa batas user (Email/Password)
+  - Firestore: 50.000 baca + 20.000 tulis + 20.000 hapus per hari,
+    penyimpanan 1 GB
+  - Storage: 5 GB, download 1 GB/hari
+  - Hosting: 10 GB transfer/bulan, 360 MB/hari build
+  Kalau ramai sekali sampai jebol kuota harian, Firestore berhenti
+  sementara sampai besok (tidak menagih uang selama di paket Spark).
+
+BATAS 100 MB PER ORANG:
+  Dihitung aplikasi dari semua teks + foto yang dikirim user itu
+  (meter ada di Profil). Penegakan ini di sisi aplikasi — user yang
+  iseng membobol aplikasi tetap bisa lolos, tapi untuk pemakaian
+  teman/keluarga sudah cukup. Penegakan di sisi server butuh Cloud
+  Functions (berbayar) dan tidak termasuk di sini.
+
+HAL YANG TIDAK ADA DI VERSI INI:
+  - Notifikasi push saat ada pesan baru (butuh FCM + Cloud Functions)
+  - Status online / centang dibaca
+  - Hapus / edit pesan, kirim video / file selain foto
+  - Panggilan suara/video

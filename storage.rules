@@ -1,0 +1,15 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Foto chat: hanya user login yang boleh upload (maks 10 MB per file)
+    // dan baca. Foto hanya bisa dibuka lewat link yang dibagikan di chat
+    // yang anggotanya sudah login — jangan sebar link foto ke luar.
+    match /chat-photos/{chatId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if false;
+    }
+  }
+}
